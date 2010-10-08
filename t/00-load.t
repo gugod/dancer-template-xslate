@@ -3,6 +3,5 @@ use warnings;
 use Test::More tests => 1;
 
 BEGIN {
-    use_ok( 'Dancer::Template::Xslate' ) || print "Bail out!
-";
+    use_ok( 'Dancer::Template::Xslate' ) || print "Bail out!";
 }
