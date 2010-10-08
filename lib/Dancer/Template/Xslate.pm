@@ -11,6 +11,8 @@ use base 'Dancer::Template::Abstract';
 
 my $_engine;
 
+sub default_tmpl_ext { "tx" }
+
 sub init {
     my $self = shift;
 
