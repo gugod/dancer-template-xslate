@@ -20,11 +20,23 @@ sub init {
         %{$self->config},
     );
 
+    my $app = Dancer::App->current;
+    $args{path} = [ $app->setting('views') ];
+
     $_engine = Text::Xslate->new(%args);
 }
 
 sub render {
     my ($self, $template, $tokens) = @_;
+
+    my $app = Dancer::App->current;
+    my $views_path = $app->setting('views');
+
+    if (index($template, $views_path) != 0) {
+        die "Template $template not found under view paths";
+    }
+
+    substr($template, 0, length($views_path)) = "";
 
     my $content = eval {
         $_engine->render($template, $tokens)
