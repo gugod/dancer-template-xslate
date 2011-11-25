@@ -26,6 +26,9 @@ sub init {
     my $view_dir = setting('views');
     push @{$args{path}}, $view_dir unless grep { $_ eq $view_dir } @{$args{path}};
     
+    ## for those people read Text::Xslate instead of Dancer::Template::Abstract
+    $self->config->{extension} = $args{suffix} if exists $args{suffix};
+    
     $_engine = Text::Xslate->new(%args);
 }
 
