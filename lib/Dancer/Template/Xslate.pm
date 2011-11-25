@@ -6,6 +6,7 @@ use strict;
 use warnings;
 
 use Text::Xslate;
+use Dancer::Config 'setting';
 
 use base 'Dancer::Template::Abstract';
 
@@ -20,11 +21,20 @@ sub init {
         %{$self->config},
     );
 
+    ## set default path for header/footer etc.
+    $args{path} ||= [];
+    my $view_dir = setting('views');
+    push @{$args{path}}, $view_dir unless grep { $_ eq $view_dir } @{$args{path}};
+    
     $_engine = Text::Xslate->new(%args);
 }
 
 sub render {
     my ($self, $template, $tokens) = @_;
+    
+    # absolute filename will never work under Windows even we hard set path as ['/']
+    my $view_dir = setting('views');
+    $template =~ s/^\Q$view_dir\E//;
 
     my $content = eval {
         $_engine->render($template, $tokens)
