@@ -39,7 +39,7 @@ sub render {
     
     # absolute filename will never work under Windows even we hard set path as ['/']
     my $view_dir = Dancer::App->current->setting('views');
-    $template =~ s/^\Q$view_dir\E//;
+    $template =~ s/^\Q$view_dir\E// if $view_dir;
 
     my $content = eval {
         $_engine->render($template, $tokens)
