@@ -6,6 +6,7 @@ use strict;
 use warnings;
 
 use Text::Xslate;
+use Dancer::App;
 
 use base 'Dancer::Template::Abstract';
 
