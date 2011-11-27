@@ -7,6 +7,7 @@ use warnings;
 
 use Text::Xslate;
 use Dancer::App;
+use File::Spec;
 
 use base 'Dancer::Template::Abstract';
 
@@ -39,7 +40,10 @@ sub render {
     
     # absolute filename will never work under Windows even we hard set path as ['/']
     my $view_dir = Dancer::App->current->setting('views');
-    $template =~ s/^\Q$view_dir\E// if $view_dir;
+    if ( $view_dir ) {
+        $view_dir = File::Spec->catdir( File::Spec->splitdir($view_dir) ) if $^O eq 'MSWin32'; # dirty Win32 fixes for / \
+        $template =~ s/^\Q$view_dir\E//;
+    }
 
     my $content = eval {
         $_engine->render($template, $tokens)
