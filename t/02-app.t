@@ -7,8 +7,8 @@ use Dancer::Test;
 
 plan tests => 3;
 
-setting template => 'xslate';
 setting views   => 't';
+setting template => 'xslate';
 
 ok(
     get '/' => sub {
