@@ -1,4 +1,10 @@
-Revision history for Perl extension Dancer::Template::Xslate
+Revision history for Dancer-Template-Xslate
+
+{{$NEXT}}
+     - fix bug preventing templates with extensions other than "tt" from being found
+     - accept relative template paths
+     - fix MS Windows pathing bug
+     - don't use Dancer::Config directly
 
 0.01 Mon 02 Aug 2010 12:23:50 PM CEST
      - initial release

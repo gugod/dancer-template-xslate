@@ -1,57 +1,57 @@
 package Dancer::Template::Xslate;
 
-# ABSTRACT: Text::Xslate wrapper for Dancer
 
 use strict;
 use warnings;
 
-use Text::Xslate;
+use Carp;
 use Dancer::App;
-use File::Spec;
+use File::Spec::Functions qw(splitpath);
+use Text::Xslate;
 
 use base 'Dancer::Template::Abstract';
 
-my $_engine;
+# VERSION
+# ABSTRACT: Text::Xslate wrapper for Dancer
 
-sub default_tmpl_ext { "tx" }
+# Note: The standard Xslate template extension is
+# "tx" but kept to "tt" for backward compatibility.
 
 sub init {
-    my $self = shift;
-
-    my %args = (
-        %{$self->config},
-    );
+    my ($self) = @_;
+    my $config = $self->config;
+    my $app    = Dancer::App->current;
+    my %xslate_args = %{$config};
 
     ## set default path for header/footer etc.
-    $args{path} ||= [];
-    my $view_dir = Dancer::App->current->setting('views');
-    push @{$args{path}}, $view_dir unless grep { $_ eq $view_dir } @{$args{path}};
-    
-    ## for those people read Text::Xslate instead of Dancer::Template::Abstract
-    $self->config->{extension} = $args{suffix} if exists $args{suffix};
-    # avoid 'Text::Xslate: Unknown option(s): extension'
-    $args{suffix} = delete $args{extension}    if exists $args{extension};
-    
-    $_engine = Text::Xslate->new(%args);
+    $xslate_args{path} ||= [];
+    my $views_dir = $config->{views_dir} = $app->setting('views');
+    push @{$xslate_args{path}}, $views_dir
+        if not grep { $_ eq $views_dir } @{$xslate_args{path}};
+
+    ## for those who read Text::Xslate instead of Dancer::Template::Abstract
+    $config->{extension} = $xslate_args{suffix}
+        if exists $xslate_args{suffix};
+
+    ## avoid 'Text::Xslate: Unknown option(s): extension'
+    $xslate_args{suffix} = delete $xslate_args{extension}
+        if exists $xslate_args{extension};
+
+    $self->{driver} = Text::Xslate->new(%xslate_args);
+    return;
 }
 
 sub render {
     my ($self, $template, $tokens) = @_;
-    
-    # absolute filename will never work under Windows even we hard set path as ['/']
-    my $view_dir = Dancer::App->current->setting('views');
-    if ( $view_dir ) {
-        $view_dir = File::Spec->catdir( File::Spec->splitdir($view_dir) ) if $^O eq 'MSWin32'; # dirty Win32 fixes for / \
-        $template =~ s/^\Q$view_dir\E//;
-    }
+    my $config = $self->config;
 
-    my $content = eval {
-        $_engine->render($template, $tokens)
-    };
+    my $views_dir = $self->config->{views_dir};
+    (undef, undef, $template) = splitpath $template if $views_dir;
+    my $xslate = $self->{driver};
+    my $content = $xslate->render($template, $tokens);
 
     if (my $err = $@) {
-        my $error = qq/Couldn't render template "$err"/;
-        die $error;
+        croak qq[Couldn't render template "$err"];
     }
 
     return $content;
