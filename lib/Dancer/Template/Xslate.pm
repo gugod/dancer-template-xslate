@@ -19,18 +19,17 @@ use base 'Dancer::Template::Abstract';
 
 sub init {
     my ($self) = @_;
-    my $config = $self->config;
     my $app    = Dancer::App->current;
-    my %xslate_args = %{$config};
+    my %xslate_args = %{$self->config};
 
     ## set default path for header/footer etc.
     $xslate_args{path} ||= [];
-    my $views_dir = $config->{views_dir} = $app->setting('views');
+    my $views_dir = $app->setting('views');
     push @{$xslate_args{path}}, $views_dir
         if not grep { $_ eq $views_dir } @{$xslate_args{path}};
 
     ## for those who read Text::Xslate instead of Dancer::Template::Abstract
-    $config->{extension} = $xslate_args{suffix}
+    $self->config->{extension} = $xslate_args{suffix}
         if exists $xslate_args{suffix};
 
     ## avoid 'Text::Xslate: Unknown option(s): extension'
@@ -43,9 +42,8 @@ sub init {
 
 sub render {
     my ($self, $template, $tokens) = @_;
-    my $config = $self->config;
-
-    my $views_dir = $self->config->{views_dir};
+    my $app    = Dancer::App->current;
+    my $views_dir = $app->setting('views');
     (undef, undef, $template) = splitpath $template if $views_dir;
     my $xslate = $self->{driver};
     my $content = $xslate->render($template, $tokens);
