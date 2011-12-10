@@ -56,6 +56,8 @@ sub render {
 
 1;
 
+__END__
+
 =head1 DESCRIPTION
 
 This class is an interface between Dancer's template engine abstraction layer
