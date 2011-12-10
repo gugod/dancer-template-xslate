@@ -68,15 +68,16 @@ In order to use this engine, use the template setting:
 This can be done in your config.yml file or directly in your app code with the
 B<set> keyword.
 
-You can configure L<Text::Xslate> :
+You can configure L<Text::Xslate>:
 
     template: xslate
     engines:
       xslate:
-        cache_dir  => "/www/../xslate_cache",
-        cache      => 1,
-        module =>
-          - Text::Xslate::Bridge::TT2 # to keep partial compatibility
+        cache_dir: .xslate_cache/
+        cache:     1
+        extension: tx                     # Dancer's default template extension is "tt"
+        module:
+          - Text::Xslate::Bridge::TT2Like # to keep partial compatibility with Template Toolkit
 
 
 =head1 SEE ALSO
