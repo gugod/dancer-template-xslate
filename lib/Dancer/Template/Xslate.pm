@@ -6,7 +6,7 @@ use warnings;
 
 use Carp;
 use Dancer::App;
-use File::Spec::Functions qw(splitpath);
+use File::Spec::Functions qw(abs2rel rel2abs);
 use Text::Xslate;
 
 use base 'Dancer::Template::Abstract';
@@ -43,8 +43,7 @@ sub init {
 sub render {
     my ($self, $template, $tokens) = @_;
     my $app    = Dancer::App->current;
-    my $views_dir = $app->setting('views');
-    (undef, undef, $template) = splitpath $template if $views_dir;
+    $template = abs2rel( rel2abs($template), $app->setting('views') );
     my $xslate = $self->{driver};
     my $content = $xslate->render($template, $tokens);
 
