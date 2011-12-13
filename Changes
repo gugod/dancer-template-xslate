@@ -1,6 +1,8 @@
 Revision history for Dancer-Template-Xslate
 
 {{$NEXT}}
+
+0.02      2011-12-12 18:35:33 CST6CDT
      - fix bug preventing templates with extensions other than "tt" from being found
      - accept relative template paths
      - fix MS Windows pathing bug

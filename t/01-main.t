@@ -10,7 +10,6 @@ ok(
     "Dancer::Template::Xslate engine created"
 );
 my $template = catfile(qw(t views index.xslate));
-
 my $result = $engine->render(
     $template,
     {   var1 => 1,
