@@ -1,0 +1,4 @@
+severity = 3
+verbose  = 9
+theme    = core
+include  = Variables::ProhibitPackageVars

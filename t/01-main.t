@@ -1,17 +1,15 @@
 use strict;
 use warnings;
 use Test::More tests => 2;
-use Dancer::FileUtils 'path';
+use File::Spec::Functions qw(catfile);
 
 use Dancer::Template::Xslate;
 
-my $engine;
-eval { $engine = Dancer::Template::Xslate->new };
-is $@, '',
-  "Dancer::Template::Xslate engine created";
-
-my $template = path('t', 'index.xslate');
-
+ok(
+    my $engine = Dancer::Template::Xslate->new,
+    "Dancer::Template::Xslate engine created"
+);
+my $template = catfile(qw(t views index.xslate));
 my $result = $engine->render(
     $template,
     {   var1 => 1,
